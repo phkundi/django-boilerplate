@@ -8,3 +8,4 @@ from .auth import (
 )
 from .stats import UserStats
 from .account import DeleteAccountView
+from .email_verification import VerifyEmailView

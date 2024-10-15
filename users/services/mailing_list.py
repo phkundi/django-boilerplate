@@ -1,3 +1,5 @@
+# helper functions to add users to mailing list from sender.net
+
 import requests
 from django.conf import settings
 

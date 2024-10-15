@@ -17,8 +17,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
 
-        # Add custom claims
-        token["username"] = user.username
+        # add custom claims
+        # token["username"] = user.username
 
         return token
 
@@ -37,7 +37,7 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         user = User.objects.get(id=user_id)
 
         # Add custom claims
-        access_token["username"] = user.username
+        # access_token["username"] = user.username
 
         data["access"] = str(access_token)
 
@@ -49,17 +49,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=get_user_model().objects.all())],
     )
-    username = serializers.CharField(
-        required=True,
-        validators=[
-            UniqueValidator(queryset=get_user_model().objects.all()),
-            RegexValidator(
-                regex="^[a-zA-Z0-9]*$",
-                message="Username must be alphanumeric",
-                code="invalid_username",
-            ),
-        ],
-    )
     password = serializers.CharField(
         write_only=True, required=True, validators=[validate_password]
     )
@@ -67,7 +56,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ("email", "username", "password", "password2")
+        fields = ("email", "password", "password2")
         extra_kwargs = {
             "password": {"write_only": True, "min_length": 8},
         }
@@ -82,7 +71,6 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.Meta.model.objects.create(
             email=validated_data["email"],
-            username=validated_data["username"],
         )
         user.set_password(validated_data["password"])
         user.save()

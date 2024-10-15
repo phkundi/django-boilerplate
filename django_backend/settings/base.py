@@ -60,7 +60,7 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    "users.auth.UsernameOrEmailBackend",
+    # "users.auth.UsernameOrEmailBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -85,8 +85,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-# ADMINS = [("Lucas", "lucas@wyldata.com"), ("Philipp", "philipp@wyldata.com")]
 
 LOGGING = {
     "version": 1,

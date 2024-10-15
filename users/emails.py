@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from users.user_tokens import VerificationTokenGenerator
 
 
 def send_welcome_mail(recipient_email):
@@ -43,6 +44,30 @@ def send_password_reset_mail(user):
     thread.start()
 
 
+def send_verification_email(user):
+    token_generator = VerificationTokenGenerator()
+    verification_token = token_generator.make_token(user)
+    user_id = urlsafe_base64_encode(force_bytes(user.pk))
+    verification_url = (
+        f"{settings.APP_URL}/verify-email?user_id={user_id}&token={verification_token}"
+    )
+
+    subject = "Verify your email address"
+    html_content = render_to_string(
+        "user-verification-email.html",
+        {
+            "name": user.first_name,
+            "verification_url": verification_url,
+            "app_name": settings.APP_NAME,
+        },
+    )
+    text_content = strip_tags(html_content)
+    thread = threading.Thread(
+        target=email_sender, args=(subject, text_content, html_content, [user.email])
+    )
+    thread.start()
+
+
 def send_connection_request_mail(connection_request):
     target_url = f"{settings.APP_URL}/user/notifications"
 
@@ -66,7 +91,7 @@ def send_connection_request_mail(connection_request):
     thread.start()
 
 
-def send_invite_mail(inviter, email, source, league_id):
+def send_invite_mail(inviter, email, source):
     target_url = (
         f"{settings.LANDING_URL}/register?"
         f"inviterId={inviter.id}&"
@@ -76,9 +101,6 @@ def send_invite_mail(inviter, email, source, league_id):
         "utm_medium=email_invite&"
         f"utm_content={inviter.username}"
     )
-
-    if league_id:
-        target_url += f"&leagueId={league_id}"
 
     html_content = render_to_string(
         "user-invite.html",

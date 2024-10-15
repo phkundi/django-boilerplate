@@ -6,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class UserBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ["id", "first_name", "last_name", "username", "country", "created_at"]
+        fields = ["id", "first_name", "last_name", "created_at"]
 
 
 class UserSerializer(UserBaseSerializer):
@@ -61,7 +61,6 @@ class AccountUpdateSerializer(serializers.Serializer):
         refresh.payload["email"] = user.email
         refresh.payload["firstName"] = user.first_name
         refresh.payload["lastName"] = user.last_name
-        refresh.payload["username"] = user.username
 
         return {
             "refresh": str(refresh),

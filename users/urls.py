@@ -8,6 +8,7 @@ from .api import (
     CustomTokenRefreshView,
     UserStats,
     DeleteAccountView,
+    VerifyEmailView,
 )
 from rest_framework import routers
 
@@ -27,5 +28,6 @@ urlpatterns = [
     path("me/", GetAuthenticatedUser.as_view(), name="me"),
     path("stats/", UserStats.as_view(), name="stats"),
     path("delete-account/", DeleteAccountView.as_view(), name="delete-account"),
+    path("verify-email/", VerifyEmailView.as_view(), name="verify-email"),
     path("", include(user_router.urls)),
 ]

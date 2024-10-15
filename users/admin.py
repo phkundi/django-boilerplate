@@ -4,16 +4,15 @@ from .models import (
     User,
 )
 
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     # Define the list_display to specify which fields to display in the admin list view
     list_display = (
         "email",
-        "username",
         "first_name",
         "last_name",
         "country",
-        "is_verified",
     )
 
     # Specify the fields that you want to be searchable
@@ -32,9 +31,7 @@ class CustomUserAdmin(UserAdmin):
                     "password",
                     "first_name",
                     "last_name",
-                    "username",
                     "country",
-                    "is_verified",
                 )
             },
         ),
@@ -65,15 +62,15 @@ class CustomUserAdmin(UserAdmin):
                     "password2",
                     "first_name",
                     "last_name",
-                    "username",
                     "country",
                 ),
             },
         ),
     )
 
-    def save_model(self, request, obj, form, change):
-        if not form.cleaned_data.get("username"):
-            obj.username = obj.email
-        super().save_model(request, obj, form, change)
+    # if you are using username, uncomment the following:
 
+    # def save_model(self, request, obj, form, change):
+    #     if not form.cleaned_data.get("username"):
+    #         obj.username = obj.email
+    #     super().save_model(request, obj, form, change)
