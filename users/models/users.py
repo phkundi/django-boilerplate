@@ -45,6 +45,9 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     birthday = models.DateField(blank=True, null=True)
     country = models.CharField(max_length=50, blank=True, null=True)
+    current_account = models.ForeignKey(
+        "users.Account", on_delete=models.CASCADE, null=True, blank=True
+    )
 
     objects = UserManager()
 

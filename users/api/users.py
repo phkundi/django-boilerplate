@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-class DeleteAccountView(APIView):
+class DeleteUserView(APIView):
     def delete(self, request):
         user = request.user
         user.delete()

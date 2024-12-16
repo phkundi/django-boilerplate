@@ -1,19 +1,10 @@
 from django.urls import path, include
-from .api import (
-    RegisterView,
-    GetAuthenticatedUser,
-    ForgotPasswordView,
-    ResetPasswordView,
-    CustomTokenObtainPairView,
-    CustomTokenRefreshView,
-    UserStats,
-    DeleteAccountView,
-    VerifyEmailView,
-)
+from .api import *
 from rest_framework import routers
 
 
 user_router = routers.DefaultRouter()
+user_router.register("accounts", AccountViewSet, basename="accounts")
 
 urlpatterns = [
     path("token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -27,7 +18,7 @@ urlpatterns = [
     ),
     path("me/", GetAuthenticatedUser.as_view(), name="me"),
     path("stats/", UserStats.as_view(), name="stats"),
-    path("delete-account/", DeleteAccountView.as_view(), name="delete-account"),
+    path("delete-user/", DeleteUserView.as_view(), name="delete-user"),
     path("verify-email/", VerifyEmailView.as_view(), name="verify-email"),
     path("", include(user_router.urls)),
 ]

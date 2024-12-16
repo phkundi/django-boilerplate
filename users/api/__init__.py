@@ -7,5 +7,6 @@ from .auth import (
     CustomTokenRefreshView,
 )
 from .stats import UserStats
-from .account import DeleteAccountView
+from .users import DeleteUserView
 from .email_verification import VerifyEmailView
+from .accounts import AccountViewSet
