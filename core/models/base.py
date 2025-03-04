@@ -15,6 +15,7 @@ def upload_path(instance=None, filename=None, prefix=False):
 
 
 class BaseModel(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(
         auto_now_add=True, null=True, verbose_name="Creation date"
     )
@@ -24,4 +25,3 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-

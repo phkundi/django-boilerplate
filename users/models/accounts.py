@@ -27,8 +27,8 @@ class AccountInvite(BaseModel):
     inviter = models.ForeignKey(
         "users.User", on_delete=models.CASCADE, related_name="sent_invites"
     )
-    company = models.ForeignKey(
-        "users.Company", on_delete=models.CASCADE, related_name="team_invites"
+    account = models.ForeignKey(
+        "users.Account", on_delete=models.CASCADE, related_name="team_invites"
     )
     token = models.CharField(max_length=255, default=generate_token)
 

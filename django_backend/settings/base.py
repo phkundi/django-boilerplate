@@ -219,15 +219,6 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 
-# Email
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = from_env("EMAIL_HOST")
-EMAIL_PORT = from_env("EMAIL_PORT")
-EMAIL_USE_TLS = from_env("EMAIL_USE_TLS", "false") == "True"
-EMAIL_HOST_USER = from_env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = from_env("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = from_env("DEFAULT_FROM_EMAIL")
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -249,3 +240,8 @@ ZEPTOMAIL_TOKEN = from_env("ZEPTOMAIL_TOKEN")
 
 # Firebase Push Notifications
 VAPID_PRIVATE_KEY = from_env("VAPID_PRIVATE_KEY")
+
+# Stripe
+STRIPE_SECRET_KEY = from_env("STRIPE_SECRET_KEY")
+STRIPE_PUBLISHABLE_KEY = from_env("STRIPE_PUBLISHABLE_KEY")
+STRIPE_WEBHOOK_SECRET = from_env("STRIPE_WEBHOOK_SECRET")
