@@ -3,9 +3,17 @@ from pathlib import Path
 import environ
 from django.core.exceptions import ImproperlyConfigured
 from datetime import timedelta
+import sys
+
+# Detect if running locally with SSL certificate
+is_using_ssl = "--cert-file" in sys.argv
 
 APP_NAME = "Django Boilerplate"
 ADMIN_EMAIL = "email@email.com"
+
+DEV_NOTIFICATIONS = [
+    "pk@pkundr.com",
+]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -38,10 +46,24 @@ AUTH_USER_MODEL = "users.User"
 
 SECURE_SSL_REDIRECT = from_env("SECURE_SSL_REDIRECT", "false") == "True"
 
+# Update APP_URL to use HTTPS when SSL is enabled
+raw_app_url = from_env("APP_URL")
+raw_backend_url = from_env("BACKEND_URL")
+raw_landing_url = from_env("LANDING_URL")
+if is_using_ssl and raw_app_url.startswith("http://"):
+    APP_URL = raw_app_url.replace("http://", "https://", 1)
+    BACKEND_URL = raw_backend_url.replace("http://", "https://", 1)
+    LANDING_URL = raw_landing_url.replace("http://", "https://", 1)
+else:
+    APP_URL = raw_app_url
+    BACKEND_URL = raw_backend_url
+    LANDING_URL = raw_landing_url
+
 
 INSTALLED_APPS = [
     "core.apps.CoreConfig",
     "users.apps.UsersConfig",
+    "notifications.apps.NotificationsConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -221,10 +243,9 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-APP_URL = from_env("APP_URL")
-LANDING_URL = from_env("LANDING_URL")
-
-SENDER_API_TOKEN = from_env("SENDER_API_TOKEN")
+# Zeptomail Email Service
 ZEPTOMAIL_FROM_EMAIL = from_env("ZEPTOMAIL_FROM_EMAIL")
 ZEPTOMAIL_TOKEN = from_env("ZEPTOMAIL_TOKEN")
+
+# Firebase Push Notifications
+VAPID_PRIVATE_KEY = from_env("VAPID_PRIVATE_KEY")
