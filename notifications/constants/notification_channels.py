@@ -1,0 +1,5 @@
+EMAIL = "EMAIL"
+PUSH = "PUSH"
+APP = "APP"
+APP_HOME = "APP_HOME"
+ALL = "ALL"

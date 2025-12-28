@@ -6,7 +6,11 @@ from .auth import (
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
 )
-from .stats import UserStats
 from .users import DeleteUserView
-from .email_verification import VerifyEmailView
+from .email_verification import (
+    VerifyEmailView,
+    ResendEmailVerificationView,
+    ResendEmailVerificationUnauthenticatedView,
+)
 from .accounts import AccountViewSet
+from .oauth import GoogleOAuth2LoginView, AppleOAuth2LoginView

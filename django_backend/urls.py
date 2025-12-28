@@ -4,10 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("api/users/", include("users.urls")),
     path("api/core/", include("core.urls")),
     path("api/notifications/", include("notifications.urls")),
+    path("api/tracking/", include("tracking.urls")),
 ]
 
 if settings.DEBUG:

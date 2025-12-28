@@ -3,7 +3,8 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import threading
-from typing import Union, List
+from typing import Union, List, Optional
+from notifications.models import EmailLog
 
 
 def filter_recipients(recipients: List[str]) -> List[str]:
@@ -22,22 +23,31 @@ def filter_recipients(recipients: List[str]) -> List[str]:
         return recipients
 
     final_recipients = []
+    is_staging = settings.ENVIRONMENT == "staging"
+
     for email in recipients:
-        # Check if email is directly in DEV_NOTIFICATIONS
+        # For staging, also allow pkundr.com emails
+        if is_staging and "@pkundr.com" in email:
+            final_recipients.append(email)
+            continue
+
+        # Check direct match first
         if email in settings.DEV_NOTIFICATIONS:
             final_recipients.append(email)
             continue
 
-        # Check if this is a variation of a whitelisted email
+        # Check for variations of whitelisted emails
         base_email = email.split("+")[0] + "@" + email.split("@")[1]
-        if base_email in settings.DEV_NOTIFICATIONS:
+        if base_email in settings.DEV_NOTIFICATIONS or (
+            is_staging and "@pkundr.com" in base_email
+        ):
             final_recipients.append(email)
 
     return final_recipients
 
 
 def email_sender(
-    subject, text_content, html_content, recipients, from_email="noreply"
+    subject, text_content, html_content, recipients, tracking=None, from_email="noreply"
 ):
     final_recipients = filter_recipients(recipients)
     if not final_recipients:
@@ -53,7 +63,11 @@ def email_sender(
         "Content-Type": "application/json",
     }
 
+    if settings.ENVIRONMENT != "production":
+        subject = f"[TEST] {subject}"
+
     payload = {
+        # "bounce_address": from_email,
         "from": {
             "address": settings.EMAIL_SENDERS[from_email]["address"],
             "name": settings.EMAIL_SENDERS[from_email]["name"],
@@ -73,7 +87,15 @@ def email_sender(
     else:
         print(f"Email sent successfully: {response.status_code}")
 
-        
+        if tracking:
+            for recipient in final_recipients:
+                EmailLog.objects.create(
+                    email=recipient,
+                    type=tracking["email_type"],
+                    reference_id=(
+                        tracking["reference_id"] if "reference_id" in tracking else None
+                    ),
+                )
 
 
 class EmailService:
@@ -83,6 +105,7 @@ class EmailService:
         template_name: str,
         context: dict,
         recipients: Union[str, List[str]],
+        tracking: Optional[dict] = None,
         from_email: str = "noreply",
     ):
         """
@@ -108,6 +131,7 @@ class EmailService:
                 text_content,
                 html_content,
                 recipients,
+                tracking,
                 from_email,
             ),
         )

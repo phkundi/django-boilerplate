@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from django.conf import settings
+from django.utils import timezone
 
 
 class UserManager(BaseUserManager):
@@ -48,6 +49,14 @@ class User(AbstractUser):
     current_account = models.ForeignKey(
         "users.Account", on_delete=models.CASCADE, null=True, blank=True
     )
+    referred_by = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="referred_users",
+    )
+    last_seen = models.DateField(default=timezone.now)
 
     objects = UserManager()
 
@@ -57,3 +66,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def update_last_seen(self):
+        self.last_seen = timezone.now()
+        self.save(update_fields=["last_seen"])

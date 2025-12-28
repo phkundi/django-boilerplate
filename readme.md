@@ -5,7 +5,7 @@
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/django-boilerplate.git
+   git clone https://github.com/phkundi/django-boilerplate.git
    ```
 
 2. Create a virtual environment:
